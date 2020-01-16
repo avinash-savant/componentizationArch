@@ -26,9 +26,23 @@ open class ProgressComponent(container: ViewGroup, bus: EventBusFactory) : UICom
         bus.getSafeManagedObservable(ScreenStateEvent::class.java)
                 .subscribe {
                     when (it) {
-                        ScreenStateEvent.Loading -> {
+                        ScreenStateEvent.Initing -> {
+                            uiView.setStatusMessage("initializing, please wait..")
                             uiView.show()
                         }
+
+                        ScreenStateEvent.CheckingDevice -> {
+                            uiView.setStatusMessage("device security check...")
+                        }
+
+                        ScreenStateEvent.CheckingNetwork -> {
+                            uiView.setStatusMessage("testing network connection...")
+                        }
+
+                        ScreenStateEvent.FetchingContent -> {
+                            uiView.setStatusMessage("loading fresh videos, almost there!")
+                        }
+
                         ScreenStateEvent.Loaded -> {
                             uiView.hide()
                         }

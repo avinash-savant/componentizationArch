@@ -31,26 +31,50 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         initComponents(findViewById(R.id.root_layout))
 
         //3
-//        startTest()
-        EventBusFactory.get(this)
-                .emit(ScreenStateEvent::class.java, ScreenStateEvent.Error)
+        startTest()
+//        EventBusFactory.get(this)
+//                .emit(ScreenStateEvent::class.java, ScreenStateEvent.Error)
     }
 
     private fun startTest() {
         Observable.just(Any())
                 .observeOn(AndroidSchedulers.mainThread())
+
                 .doOnNext {
                     EventBusFactory.get(this)
-                            .emit(ScreenStateEvent::class.java, ScreenStateEvent.Loading)
+                            .emit(ScreenStateEvent::class.java, ScreenStateEvent.Initing)
+                }
+                .delay(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .doOnNext {
+                    EventBusFactory.get(this)
+                            .emit(ScreenStateEvent::class.java, ScreenStateEvent.CheckingDevice)
+                }
+                .delay(1500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .doOnNext {
+                    EventBusFactory.get(this)
+                            .emit(ScreenStateEvent::class.java, ScreenStateEvent.CheckingNetwork)
                 }
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+
+                .doOnNext {
+                    EventBusFactory.get(this)
+                            .emit(ScreenStateEvent::class.java, ScreenStateEvent.FetchingContent)
+                }
+                .delay(2500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+
                 .doOnNext {
                     EventBusFactory.get(this)
                             .emit(ScreenStateEvent::class.java, ScreenStateEvent.Loaded)
                 }
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+
                 .doOnNext {
                     EventBusFactory.get(this).emit(ScreenStateEvent::class.java, ScreenStateEvent.Error)
                 }
@@ -60,6 +84,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     @SuppressLint("CheckResult")
     private fun initComponents(rootViewContainer: ViewGroup) {
         ProgressComponent(rootViewContainer, EventBusFactory.get(this))
+
         // If the UI Component emits Interaction Events it can be observed like this
         ErrorComponent(rootViewContainer, EventBusFactory.get(this))
                 .getUserInteractionEvents()

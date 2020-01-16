@@ -5,7 +5,6 @@ import androidx.annotation.VisibleForTesting
 import com.neo.app2.splash.ScreenStateEvent
 import com.neo.app2.splash.UserActionEvent
 import com.neo.app2.splash.components.views.ErrorView
-import com.neo.app2.splash.components.views.LoadingView
 import com.netflix.componentizationV1.EventBusFactory
 import com.netflix.componentizationV1.UIComponent
 import io.reactivex.Observable
@@ -30,7 +29,7 @@ open class ErrorComponent(container: ViewGroup, private val bus: EventBusFactory
         bus.getSafeManagedObservable(ScreenStateEvent::class.java)
                 .subscribe {
                     when (it) {
-                        ScreenStateEvent.Loading -> {
+                        ScreenStateEvent.Initing -> {
                             uiView.hide()
                         }
                         ScreenStateEvent.Loaded -> {
